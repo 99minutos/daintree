@@ -124,7 +124,6 @@ export default class RelatedInstances extends DaintreeComponent {
 
   @Watch("filterValue")
   onFilterChanged(): void {
-    console.log("changed");
     this.describeInstances();
   }
 
