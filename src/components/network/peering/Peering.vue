@@ -148,12 +148,6 @@ export default class Peering extends DaintreeComponent {
   cancelProps = {
     text: "Cancel",
   };
-  get EC2(): EC2Client {
-    return new EC2Client({
-      region: this.peering.region,
-      credentials: this.$store.getters["sts/credentials"],
-    });
-  }
 
   get alertVariant(): AlertVariant {
     switch (this.peering.Status?.Code) {
@@ -177,29 +171,47 @@ export default class Peering extends DaintreeComponent {
     return "info";
   }
 
-  deletePeering() {
+  async EC2Client(): Promise<EC2Client | void> {
+    const credentials = await this.credentials();
+
+    if (credentials === undefined) {
+      return;
+    }
+
+    return new EC2Client({ region: this.peering.region, credentials });
+  }
+
+  async deletePeering(): Promise<void> {
     if (!this.peering.VpcPeeringConnectionId) {
       return;
     }
 
-    this.EC2.deleteVpcPeeringConnection(
-      { VpcPeeringConnectionId: this.peering.VpcPeeringConnectionId },
-      (err) => {
-        if (err) {
-          this.showError(err.message, "deletePeering");
-        } else {
-          this.hideErrors("deleteNat");
-          this.showAlert({
-            variant: "info",
-            text:
-              "Deleted Peering with ID " + this.peering.VpcPeeringConnectionId,
-            key: "deletingPeering",
-            resourceId: this.peering.VpcPeeringConnectionId,
-          });
-          this.$emit("deleted");
-        }
-      }
-    );
+    const client = await this.EC2Client();
+
+    if (!client) {
+      return;
+    }
+
+    try {
+      await client
+        .deleteVpcPeeringConnection({
+          VpcPeeringConnectionId: this.peering.VpcPeeringConnectionId,
+        })
+        .promise();
+
+      this.hideErrors("deletePeering");
+      this.showAlert({
+        variant: "info",
+        text:
+          "Deleted VPC peering connection with ID " +
+          this.peering.VpcPeeringConnectionId,
+        key: "deletingPeering",
+        resourceId: this.peering.VpcPeeringConnectionId,
+      });
+      this.$emit("deleted");
+    } catch (err) {
+      this.showError(err.message, "deletePeering");
+    }
   }
 }
 </script>
