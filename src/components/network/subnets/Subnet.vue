@@ -144,7 +144,7 @@ import {
 } from "@gitlab/ui";
 import EC2Client from "aws-sdk/clients/ec2";
 import { Component, Prop, Watch } from "vue-property-decorator";
-import { RouteTable, NetworkAcl, NetworkAclEntry } from "aws-sdk/clients/ec2";
+import { NetworkAcl, NetworkAclEntry } from "aws-sdk/clients/ec2";
 import { Formatters } from "@/mixins/formatters";
 import TagsTable from "@/components/common/TagsTable.vue";
 import { mixins } from "vue-class-component";
@@ -298,7 +298,6 @@ export default class Subnet extends mixins(Formatters, Notifications) {
   //This happens while the user clicks on a row of the table while the sidebar is open.
   @Watch("subnet")
   onSubnetChanged() {
-    this.describeRouteTable();
     this.describeAcls();
   }
 }
