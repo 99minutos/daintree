@@ -9,7 +9,11 @@
     >
       <template #header>{{ selectedResourceTitle }}</template>
 
-      <Peering :peering="selectedResource" v-on:deleted="close" />
+      <TasksDefinitionsForFamily
+        v-if="selectedResource"
+        :region="selectedResource.region"
+        :family="selectedResource.family"
+      />
     </gl-drawer>
 
     <div class="container-fluid">
@@ -39,7 +43,10 @@
         :filter="filter"
         :busy="loadingCount > 0"
         ref="resourcesTable"
-        primary-key="name"
+        primary-key="family"
+        selectable
+        select-mode="single"
+        @row-selected="onRowSelected"
         v-show="resourcesAsList.length > 0"
         show-empty
         hover
@@ -53,18 +60,7 @@
             compact
           />
         </template>
-        <template v-slot:cell(show_details)="row">
-          <gl-button size="small" @click="row.toggleDetails" class="mr-2">
-            {{ row.detailsShowing ? "Hide" : "Show" }} revisions
-          </gl-button>
-        </template>
 
-        <template v-slot:row-details="row">
-          <TasksDefinitionsForFamily
-            :region="row.item.region"
-            :family="row.item.name"
-          />
-        </template>
         <template v-slot:cell(region)="data">
           <RegionText :region="data.value" />
         </template>
@@ -106,12 +102,6 @@
 </template>
 
 <script lang="ts">
-import {
-  DescribeVpcPeeringConnectionsRequest,
-  VpcPeeringConnection,
-  VpcPeeringConnectionList,
-} from "aws-sdk/clients/ec2";
-
 import Header from "@/components/Header/Header.vue";
 import RegionText from "@/components/common/RegionText.vue";
 import {
@@ -128,14 +118,9 @@ import {
 } from "@gitlab/ui";
 import Component from "vue-class-component";
 import StateText from "@/components/common/StateText.vue";
-import { NetworkComponent } from "@/components/network/networkComponent";
 import Peering from "@/components/network/peering/Peering.vue";
 import { EcsComponent } from "@/components/ECS/ecsComponent";
-import {
-  DescribeTaskDefinitionRequest,
-  ListTaskDefinitionFamiliesRequest,
-  TaskDefinition,
-} from "aws-sdk/clients/ecs";
+import { ListTaskDefinitionFamiliesRequest } from "aws-sdk/clients/ecs";
 import TasksDefinitionsForFamily from "@/components/ECS/taskDefinitions/TasksDefinitionsForFamily.vue";
 
 @Component({
@@ -161,15 +146,15 @@ import TasksDefinitionsForFamily from "@/components/ECS/taskDefinitions/TasksDef
 })
 export default class TasksDefinitionsList extends EcsComponent<
   { [key: string]: string },
-  "name"
+  "family"
 > {
   resourceName = "task definition";
   canCreate = false;
-  resourceUniqueKey: "name" = "name";
+  resourceUniqueKey: "family" = "family";
   workingStates = [];
 
   fields = [
-    { key: "name", sortable: "true" },
+    { key: "family", sortable: "true" },
     { key: "region", sortable: "true" },
     { key: "show_details", label: "" },
 
@@ -216,7 +201,7 @@ export default class TasksDefinitionsList extends EcsComponent<
         return [];
       }
       return data.families.map((s) => {
-        return { name: s };
+        return { family: s };
       });
     } catch (err) {
       this.showError(`[${region}] ` + err, `tasksDefinitions`);

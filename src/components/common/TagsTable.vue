@@ -136,7 +136,13 @@ export default class TagsTable extends Vue {
   @Prop(Array) readonly tags: TagList | undefined;
   @Prop(String) readonly region!: string;
   @Prop(String) readonly resourceId!: string;
-  @Prop(String) readonly provider: "EC2" | "SQS" | "SNS" | "ELB" | undefined;
+  @Prop(String) readonly provider:
+    | "EC2"
+    | "SQS"
+    | "SNS"
+    | "ELB"
+    | "ECS"
+    | undefined;
 
   fields = [
     { key: "Key", sortable: true },
