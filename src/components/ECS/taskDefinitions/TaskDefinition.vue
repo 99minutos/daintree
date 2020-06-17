@@ -9,12 +9,16 @@
         <DrawerCards :cards="cards" />
 
         <TagsTable
+          v-if="taskDefinition.status === 'ACTIVE'"
           :key="taskDefinition.taskDefinitionArn"
           :tags="tags"
           :region="region"
           :resource-id="taskDefinition.taskDefinitionArn"
           provider="ECS"
         />
+        <p v-else class="mt-9 text-center col-12">
+          <i>Inactive tasks cannot have tags</i>
+        </p>
       </gl-tab>
       <gl-tab title="Containers">
         <gl-tabs
@@ -32,17 +36,27 @@
         </gl-tabs>
 
         <SingleContainer
-          v-else
+          v-else-if="taskDefinition.containerDefinitions.length > 0"
           :container="taskDefinition.containerDefinitions[0]"
         />
       </gl-tab>
-      <gl-tab title="Volumes"></gl-tab>
+      <gl-tab title="Volumes">
+        <gl-table
+          :items="taskDefinition.volumes"
+          borderless
+          small
+          hover
+          thead-class="hidden-header"
+          show-empty
+          empty-text="Daintree hasn't found any related volume"
+        />
+      </gl-tab>
     </gl-tabs>
   </div>
 </template>
 
 <script lang="ts">
-import { GlAlert, GlTabs, GlTab } from "@gitlab/ui";
+import { GlAlert, GlTabs, GlTab, GlTable } from "@gitlab/ui";
 import { DaintreeComponent } from "@/mixins/DaintreeComponent";
 import { Component, Prop } from "vue-property-decorator";
 import ECS from "aws-sdk/clients/ecs";
@@ -59,6 +73,7 @@ import SingleContainer from "@/components/ECS/taskDefinitions/SingleContainer.vu
     GlTab,
     DrawerCards,
     TagsTable,
+    GlTable,
   },
 })
 export default class TaskDefinition extends DaintreeComponent {
@@ -67,7 +82,6 @@ export default class TaskDefinition extends DaintreeComponent {
 
   taskDefinition: ECS.TaskDefinition | undefined = {};
   errorMessage = "";
-  //TODO: implement tags in the tags component
   tags: ECS.Tags | undefined = [];
 
   get cards(): CardContent[] {

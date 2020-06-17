@@ -75,18 +75,18 @@
         <gl-empty-state
           class="mt-5"
           v-if="loadingCount === 0 && resourcesAsList.length === 0"
-          title="No peering connections found in the selected regions!"
+          title="No ECS tasks found in the selected regions!"
           svg-path="/assets/undraw_empty_xct9.svg"
           :description="emptyStateDescription"
           compact
         >
           <template #actions>
-            <gl-button
-              icon="plus"
-              variant="success"
-              to="/network/peeringConnections/new"
-              >New peering connection
-            </gl-button>
+            <!--            <gl-button-->
+            <!--              icon="plus"-->
+            <!--              variant="success"-->
+            <!--              to="/network/peeringConnections/new"-->
+            <!--              >New peering connection-->
+            <!--            </gl-button>-->
             <gl-button
               category="secondary"
               variant="success"
