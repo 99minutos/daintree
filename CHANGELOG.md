@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Changed
 
-- Refactored the tags table to use more modern Javascript (`async/await`, yeah)
+- Refactored the tags table to use more modern Javascript
 
 ### Fixed
 
