@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header @refresh="regionChanged" :loading="loadingCount > 0" />
+    <Header @refresh="regionChanged" :loading="isLoading" />
     <div class="container mt-2">
       <h2>Create a new Nat</h2>
       <gl-alert variant="tip" class="mb-2 mt-2" :dismissible="false">
@@ -307,5 +307,3 @@ export default class NewNat extends mixins(Notifications, Formatters) {
   }
 }
 </script>
-
-<style scoped></style>

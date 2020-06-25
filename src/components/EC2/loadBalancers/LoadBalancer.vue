@@ -562,5 +562,3 @@ export default class LoadBalancer extends Formatters {
   }
 }
 </script>
-
-<style scoped></style>

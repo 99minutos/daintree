@@ -434,5 +434,3 @@ export default class TagsTable extends DaintreeComponent {
   }
 }
 </script>
-
-<style scoped></style>

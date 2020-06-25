@@ -134,5 +134,3 @@ export default class NewEip extends mixins(Notifications, Formatters) {
   }
 }
 </script>
-
-<style scoped></style>

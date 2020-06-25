@@ -567,5 +567,3 @@ export default class Instance extends DaintreeComponent {
   }
 }
 </script>
-
-<style scoped></style>

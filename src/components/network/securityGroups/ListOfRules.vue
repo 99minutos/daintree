@@ -95,5 +95,3 @@ export default class ListOfRules extends Vue {
   }
 }
 </script>
-
-<style scoped></style>

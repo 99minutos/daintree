@@ -446,5 +446,3 @@ export default class SQS extends DaintreeComponent {
   }
 }
 </script>
-
-<style scoped></style>

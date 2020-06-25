@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header @refresh="regionChanged" :loading="loadingCount > 0" />
+    <Header @refresh="regionChanged" :loading="isLoading" />
     <div class="container mt-2">
       <h2>Create a new subnet</h2>
       <gl-alert variant="tip" class="mb-2 mt-2" :dismissible="false">
@@ -43,7 +43,7 @@
       >
         <gl-form-select
           id="vpc-input"
-          :disabled="selectedRegion === '' || loadingCount > 0"
+          :disabled="selectedRegion === '' || isLoading"
           v-model="selectedVpc"
           :options="vpcsOptions"
         />
@@ -59,7 +59,7 @@
       >
         <gl-form-select
           id="az-input"
-          :disabled="selectedRegion === '' || loadingCount > 0"
+          :disabled="selectedRegion === '' || isLoading"
           v-model="selectedAz"
           :options="azOptions"
         />
@@ -258,5 +258,3 @@ export default class NewSubnet extends mixins(Notifications, Formatters) {
   }
 }
 </script>
-
-<style scoped></style>

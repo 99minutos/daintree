@@ -1,10 +1,9 @@
 <template>
   <div>
-    <Header hide-refresher />
-    <NetworkMain only-content />
-    <EC2Main only-content />
-    <MessagesMain only-content />
-    <ECSMain only-content />
+    <NetworkMain />
+    <EC2Main />
+    <MessagesMain />
+    <ECSMain />
   </div>
 </template>
 
@@ -21,5 +20,3 @@ import ECSMain from "@/components/ECS/ECSMain.vue";
 })
 export default class MainMenu extends Vue {}
 </script>
-
-<style scoped></style>

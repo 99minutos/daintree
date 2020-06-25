@@ -144,5 +144,3 @@ export default class NewKeyPair extends DaintreeComponent {
   }
 }
 </script>
-
-<style scoped></style>

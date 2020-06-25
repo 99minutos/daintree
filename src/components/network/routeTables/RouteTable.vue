@@ -96,6 +96,7 @@ import { isString } from "@/utils/isString";
 import ListOfRoutes from "@/components/network/routeTables/ListOfRoutes.vue";
 import DrawerCards from "@/components/common/DrawerCards.vue";
 import { CardContent } from "@/components/common/cardContent";
+import { DaintreeComponent } from "@/mixins/DaintreeComponent";
 
 @Component({
   components: {
@@ -117,7 +118,7 @@ import { CardContent } from "@/components/common/cardContent";
   },
   directives: { "gl-modal-directive": GlModalDirective },
 })
-export default class RouteTable extends mixins(Formatters, Notifications) {
+export default class RouteTable extends DaintreeComponent {
   @Prop(Object) readonly routeTable!: RouteTableWithRegion;
   @Prop(String) readonly mainRouteAssociationId: string | undefined;
 
@@ -226,5 +227,3 @@ export default class RouteTable extends mixins(Formatters, Notifications) {
   }
 }
 </script>
-
-<style scoped></style>

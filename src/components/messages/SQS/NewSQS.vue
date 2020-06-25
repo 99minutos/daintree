@@ -96,5 +96,3 @@ export default class NewSQS extends Notifications {
   }
 }
 </script>
-
-<style scoped></style>

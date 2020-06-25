@@ -173,5 +173,3 @@ export default class SnapshotsTab extends DaintreeComponent {
   }
 }
 </script>
-
-<style scoped></style>

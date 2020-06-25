@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header v-on:refresh="getAllLoadBalancers" :loading="loadingCount > 0" />
+    <Header v-on:refresh="getAllLoadBalancers" :loading="isLoading" />
 
     <gl-drawer
       :open="drawerOpened && selectedLoadBalancer !== {}"
@@ -40,7 +40,7 @@
         :items="loadBalancersAsList"
         :fields="fields"
         :filter="filter"
-        :busy="loadingCount > 0"
+        :busy="isLoading"
         selectable
         select-mode="single"
         @row-selected="onRowSelected"
@@ -75,12 +75,12 @@
     <div class="container">
       <gl-skeleton-loading
         class="mt-5"
-        v-if="loadingCount > 0 && loadBalancersAsList.length < 1"
+        v-if="isLoading && loadBalancersAsList.length < 1"
       />
 
       <gl-empty-state
         class="mt-5"
-        v-if="loadingCount === 0 && loadBalancersAsList.length === 0"
+        v-if="!isLoading && loadBalancersAsList.length === 0"
         title="No load balancers found in the selected regions!"
         svg-path="/assets/undraw_empty_xct9.svg"
         :description="emptyStateDescription"
@@ -311,7 +311,7 @@ export default class LoadBalancers extends mixins(Formatters, Notifications) {
       //We wait until all the data have been loaded and then we select the row on the table.
       //This is necessary because every time the data of the table is updated, a row selected event with
       //0 elements is emitted, removing our selection
-      if (this.$route.query.loadBalancerArn && this.loadingCount === 0) {
+      if (this.$route.query.loadBalancerArn && !this.isLoading) {
         this.$nextTick().then(() => {
           const filteredLoadBalancers = this.loadBalancersAsList.filter(
             (loadBalancer) =>
@@ -428,5 +428,3 @@ export default class LoadBalancers extends mixins(Formatters, Notifications) {
   }
 }
 </script>
-
-<style scoped></style>

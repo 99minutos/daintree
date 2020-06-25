@@ -9,28 +9,16 @@ async function getCallerIdentity(
   loginMethod: "cognito" | "accessKey",
   context: ActionContext<STSState, any>,
   credentials: Credentials
-): Promise<boolean> {
+): Promise<void> {
   const STS = new STSClient({ credentials });
 
-  try {
-    const response = await STS.getCallerIdentity({}).promise();
-    context.commit("login", {
-      arn: response.Arn,
-      account: response.Account,
-      credentials,
-      loginMethod,
-    });
-
-    return true;
-  } catch (err) {
-    const notification: AppNotification = {
-      key: "login",
-      text: err.message,
-      variant: "danger",
-    };
-    context.commit("notifications/show", notification, { root: true });
-    return false;
-  }
+  const response = await STS.getCallerIdentity({}).promise();
+  context.commit("login", {
+    arn: response.Arn,
+    account: response.Account,
+    credentials,
+    loginMethod,
+  });
 }
 
 export const STSActions = {

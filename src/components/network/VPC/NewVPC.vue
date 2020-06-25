@@ -126,5 +126,3 @@ export default class NewVPC extends Notifications {
   }
 }
 </script>
-
-<style scoped></style>

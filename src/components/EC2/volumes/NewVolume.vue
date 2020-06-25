@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header :loading="this.loadingCount > 0" />
+    <Header :loading="this.isLoading" />
     <div class="container mt-2">
       <h2>Create a new EBS</h2>
       <gl-alert variant="tip" class="mb-2 mt-2" :dismissible="false">
@@ -274,5 +274,3 @@ export default class NewVolume extends DaintreeComponent {
   }
 }
 </script>
-
-<style scoped></style>

@@ -117,5 +117,3 @@ export default class RelatedRoutesTable extends DaintreeComponent {
   }
 }
 </script>
-
-<style scoped></style>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header @refresh="regionChanged" :loading="loadingCount > 0" />
+    <Header @refresh="regionChanged" :loading="isLoading" />
     <div class="container mt-2">
       <h2>Create a new security group</h2>
       <gl-alert variant="tip" class="mb-2 mt-2" :dismissible="false">
@@ -52,7 +52,7 @@
       >
         <gl-form-select
           id="vpc-input"
-          :disabled="selectedRegion === '' || loadingCount > 0"
+          :disabled="selectedRegion === '' || isLoading"
           v-model="selectedVpc"
           :options="vpcsOptions"
         />
@@ -202,5 +202,3 @@ export default class NewSecurityGroup extends mixins(
   }
 }
 </script>
-
-<style scoped></style>

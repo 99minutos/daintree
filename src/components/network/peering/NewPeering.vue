@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header @refresh="refresh" :loading="loadingCount > 0" />
+    <Header @refresh="refresh" :loading="isLoading" />
     <div class="container mt-2">
       <h2>Create a new VPC peering connection</h2>
       <gl-alert variant="tip" class="mb-2 mt-2" :dismissible="false">
@@ -49,7 +49,7 @@
         >
           <gl-form-select
             id="vpc-input"
-            :disabled="form.requesterRegion === '' || loadingCount > 0"
+            :disabled="form.requesterRegion === '' || isLoading"
             v-model="form.requesterVpc"
             :options="requesterVPCs"
             value-field="VpcId"
@@ -92,7 +92,7 @@
         >
           <gl-form-select
             id="accepter-vpc-input"
-            :disabled="form.accepterRegion === '' || loadingCount > 0"
+            :disabled="form.accepterRegion === '' || isLoading"
             v-model="form.accepterVpc"
             :options="accepterVPCs"
             value-field="VpcId"
@@ -291,5 +291,3 @@ export default class NewPeering extends DaintreeComponent {
   }
 }
 </script>
-
-<style scoped></style>

@@ -105,5 +105,3 @@ export default class NewSNS extends Notifications {
   }
 }
 </script>
-
-<style scoped></style>
