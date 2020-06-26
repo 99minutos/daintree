@@ -2,7 +2,6 @@ import { ActionContext } from "vuex";
 import { Role, STSState } from "@/store/sts/state";
 import STSClient from "aws-sdk/clients/sts";
 import { CognitoIdentityCredentials, Credentials } from "aws-sdk/lib/core";
-import { AppNotification } from "@/store/notifications/state";
 import CognitoIdentityClient from "aws-sdk/clients/cognitoidentity";
 
 async function getCallerIdentity(

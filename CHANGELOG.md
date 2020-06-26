@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Remove internal error notification on login
+- Fix 404 after creating a new peering connection
+- Fix title and cancel button in the new sns topic page
 
 ## [0.7.0]
 

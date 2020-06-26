@@ -101,7 +101,6 @@
 </template>
 
 <script lang="ts">
-import Header from "./Header/Header.vue";
 import {
   GlAlert,
   GlFormGroup,
@@ -119,7 +118,6 @@ import { DaintreeComponent } from "@/mixins/DaintreeComponent";
 
 @Component({
   components: {
-    Header,
     GlFormGroup,
     GlTabs,
     GlTab,

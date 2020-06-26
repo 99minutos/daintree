@@ -100,7 +100,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Component, Prop } from "vue-property-decorator";
 import { TagList, Tag } from "aws-sdk/clients/ec2";
 import ECS from "aws-sdk/clients/ecs";
 import {

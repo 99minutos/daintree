@@ -174,7 +174,7 @@ import {
   GlLink,
 } from "@gitlab/ui";
 import EC2Client, { VolumeStatusInfo } from "aws-sdk/clients/ec2";
-import { Component, Prop, Watch } from "vue-property-decorator";
+import { Component, Prop } from "vue-property-decorator";
 import TagsTable from "@/components/common/TagsTable.vue";
 import FlowLogsTab from "@/components/network/flowLogs/FlowLogsTab.vue";
 import SubnetTab from "@/components/network/subnets/SubnetTab.vue";

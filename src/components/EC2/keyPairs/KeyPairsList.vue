@@ -96,7 +96,6 @@ import {
   KeyPair as AWSKeyPair,
 } from "aws-sdk/clients/ec2";
 
-import Header from "@/components/Header/Header.vue";
 import RegionText from "@/components/common/RegionText.vue";
 import {
   GlButton,
@@ -115,7 +114,6 @@ import KeyPair from "@/components/EC2/keyPairs/KeyPair.vue";
 @Component({
   components: {
     KeyPair,
-    Header,
     GlTable,
     RegionText,
     GlIcon,

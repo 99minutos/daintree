@@ -97,29 +97,20 @@
 </template>
 
 <script lang="ts">
-import EC2Client, { Address } from "aws-sdk/clients/ec2";
-
-import Header from "@/components/Header/Header.vue";
+import { Address, DescribeAddressesRequest } from "aws-sdk/clients/ec2";
 import Eip from "./Eip.vue";
 import RegionText from "@/components/common/RegionText.vue";
 import {
+  GlButton,
   GlDrawer,
   GlEmptyState,
   GlFormInput,
   GlModalDirective,
-  GlButton,
   GlSkeletonLoading,
   GlTable,
 } from "@gitlab/ui";
-import { Component, Watch } from "vue-property-decorator";
-import { Formatters } from "@/mixins/formatters";
+import { Component } from "vue-property-decorator";
 import StateText from "@/components/common/StateText.vue";
-import Notifications from "@/mixins/notifications";
-import { mixins } from "vue-class-component";
-import { DescribeAddressesRequest } from "aws-sdk/clients/ec2";
-import { eips } from "@/components/network/eips/eip";
-import EipWithRegion = eips.EipWithRegion;
-import { DaintreeComponent } from "@/mixins/DaintreeComponent";
 import { NetworkComponent } from "@/components/network/networkComponent";
 
 @Component({

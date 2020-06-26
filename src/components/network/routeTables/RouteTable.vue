@@ -84,10 +84,7 @@ import {
 } from "@gitlab/ui";
 import EC2Client from "aws-sdk/clients/ec2";
 import { Component, Prop } from "vue-property-decorator";
-import { Formatters } from "@/mixins/formatters";
 import TagsTable from "@/components/common/TagsTable.vue";
-import { mixins } from "vue-class-component";
-import Notifications from "@/mixins/notifications";
 import FlowLogsTab from "@/components/network/flowLogs/FlowLogsTab.vue";
 import { routeTables } from "@/components/network/routeTables/routeTable";
 import RouteTableWithRegion = routeTables.RouteTableWithRegion;

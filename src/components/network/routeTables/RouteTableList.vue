@@ -131,10 +131,8 @@ import {
 } from "@gitlab/ui";
 import Component from "vue-class-component";
 import StateText from "@/components/common/StateText.vue";
-import { routeTables } from "@/components/network/routeTables/routeTable";
 import RouteTable from "@/components/network/routeTables/RouteTable.vue";
 import { NetworkComponent } from "@/components/network/networkComponent";
-import RouteTableWithRegion = routeTables.RouteTableWithRegion;
 
 @Component({
   components: {

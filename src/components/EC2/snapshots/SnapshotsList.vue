@@ -114,7 +114,6 @@ import {
   Snapshot as AWSSnapshot,
 } from "aws-sdk/clients/ec2";
 
-import Header from "@/components/Header/Header.vue";
 import RegionText from "@/components/common/RegionText.vue";
 import {
   GlButton,
@@ -136,7 +135,6 @@ import StateText from "@/components/common/StateText.vue";
 @Component({
   components: {
     Snapshot,
-    Header,
     GlTable,
     RegionText,
     GlIcon,

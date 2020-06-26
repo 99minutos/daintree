@@ -104,9 +104,8 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import Header from "@/components/Header/Header.vue";
 import { GlButton, GlButtonGroup, GlIcon } from "@gitlab/ui";
 
-@Component({ components: { Header, GlButton, GlButtonGroup, GlIcon } })
+@Component({ components: { GlButton, GlButtonGroup, GlIcon } })
 export default class OAuthInstructions extends Vue {}
 </script>

@@ -27,7 +27,7 @@
           category="secondary"
           variant="success"
           class="col-12 col-sm-3 col-lg-2"
-          to="/messages/sns/new"
+          to="/messages/sns_topics/new"
           >Create new topic
         </gl-button>
       </div>
@@ -89,7 +89,10 @@
           compact
         >
           <template #actions>
-            <gl-button icon="plus" variant="success" to="/messages/sns/new"
+            <gl-button
+              icon="plus"
+              variant="success"
+              to="/messages/sns_topics/new"
               >Create new topic
             </gl-button>
             <gl-button

@@ -1,5 +1,4 @@
 import { Component } from "vue-property-decorator";
-import ECS, { Tag } from "aws-sdk/clients/ecs";
 import { DaintreeListComponent } from "@/mixins/DaintreeListComponent";
 import SNSClient from "aws-sdk/clients/sns";
 

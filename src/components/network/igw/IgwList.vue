@@ -109,7 +109,6 @@
 <script lang="ts">
 import { InternetGateway } from "aws-sdk/clients/ec2";
 
-import Header from "@/components/Header/Header.vue";
 import Igw from "./Igw.vue";
 import RegionText from "@/components/common/RegionText.vue";
 import {
@@ -129,7 +128,6 @@ import { NetworkComponent } from "@/components/network/networkComponent";
 @Component({
   components: {
     StateText,
-    Header,
     GlTable,
     RegionText,
     GlDrawer,
