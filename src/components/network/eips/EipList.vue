@@ -151,13 +151,14 @@ export default class EipList extends NetworkComponent<Address, "AllocationId"> {
   ];
 
   //When the selected EIP is disassociated, we refresh its state, and it will be propagated down to the tab
-  disassociated() {
-    if (this.selectedEip.region && this.selectedEip.AllocationId) {
-      this.getEipForRegion(this.selectedEip.region, [
-        this.selectedEip.AllocationId,
-      ]);
-    }
-  }
+  //TODO: move update inside component
+  // disassociated() {
+  //   if (this.selectedEip.region && this.selectedEip.AllocationId) {
+  //     this.getEipForRegion(this.selectedEip.region, [
+  //       this.selectedEip.AllocationId,
+  //     ]);
+  //   }
+  // }
 
   async getResourcesForRegion(
     region: string,

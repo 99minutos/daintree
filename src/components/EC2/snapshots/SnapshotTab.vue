@@ -67,11 +67,12 @@ import {
   GlAlert,
   GlTooltipDirective,
 } from "@gitlab/ui";
-import Component from "vue-class-component";
+import Component, { mixins } from "vue-class-component";
 import Snapshot from "@/components/EC2/snapshots/Snapshot.vue";
 import StateText from "@/components/common/StateText.vue";
 import { DaintreeComponent } from "@/mixins/DaintreeComponent";
 import { Prop, Watch } from "vue-property-decorator";
+import { Formatters } from "@/mixins/formatters";
 
 @Component({
   components: {
@@ -92,7 +93,10 @@ import { Prop, Watch } from "vue-property-decorator";
     "gl-tooltip": GlTooltipDirective,
   },
 })
-export default class SnapshotsTab extends DaintreeComponent {
+export default class SnapshotsTab extends mixins(
+  DaintreeComponent,
+  Formatters
+) {
   @Prop(String) volumeId!: string;
   @Prop(String) region!: string;
 

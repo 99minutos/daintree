@@ -188,6 +188,8 @@ import SnapshotTab from "@/components/EC2/snapshots/SnapshotTab.vue";
 import RelatedInstances from "@/components/EC2/instances/RelatedInstances.vue";
 import DrawerCards from "@/components/common/DrawerCards.vue";
 import { CardContent } from "@/components/common/cardContent";
+import { Formatters } from "@/mixins/formatters";
+import { mixins } from "vue-class-component";
 
 @Component({
   components: {
@@ -217,7 +219,7 @@ import { CardContent } from "@/components/common/cardContent";
     "gl-tooltip": GlTooltipDirective,
   },
 })
-export default class Volume extends DaintreeComponent {
+export default class Volume extends mixins(DaintreeComponent, Formatters) {
   @Prop(Object) readonly volume!: VolumeWithRegion;
 
   deleteVolumeButtonProps = {
