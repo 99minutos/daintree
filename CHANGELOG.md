@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Add announcement bar when a new version is released
 - New, cleaner, homepage
 - Prerender the new homepage to maximize performance
 
