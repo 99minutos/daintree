@@ -240,22 +240,20 @@ export default class Endpoint extends DaintreeComponent {
   };
 
   get alertVariant(): AlertVariant {
-    switch (this.endpoint.State) {
-      case "initiating-request":
-      case "pending-acceptance":
+    //toLowerCase: the typings from the library are broken :/
+    switch (this.endpoint.State?.toLowerCase()) {
+      case "pendingacceptance":
+      case "pending":
         return "info";
-
-      case "active":
+      case "available":
         return "success";
-      case "deleted":
-      case "failed":
-        return "danger";
-      case "rejected":
-      case "provisioning":
       case "deleting":
         return "warning";
+      case "deleted":
+      case "rejected":
+      case "failed":
       case "expired":
-        return "tip";
+        return "danger";
     }
 
     return "info";
