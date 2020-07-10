@@ -3,15 +3,15 @@
     <gl-tab title="Overview">
       <gl-modal
         modal-id="delete-endpoint-modal"
-        title="Delete VPC endpoint connection"
+        title="Delete VPC endpoint"
         no-fade
         :action-primary="deleteEndpointButtonProps"
         :action-cancel="cancelProps"
         @primary="deleteEndpoint"
       >
-        Are you sure that you want to delete this VPC endpoint connection ({{
+        Are you sure that you want to delete this VPC endpoint ({{
           endpoint.VpcEndpointId
-        }}?
+        }})?
       </gl-modal>
       <div class="row justify-content-between">
         <gl-alert :variant="alertVariant" :dismissible="false" class="col-9">
@@ -232,7 +232,7 @@ export default class Endpoint extends DaintreeComponent {
   }
 
   deleteEndpointButtonProps = {
-    text: "Delete Endpoint",
+    text: "Delete endpoint",
   };
 
   cancelProps = {

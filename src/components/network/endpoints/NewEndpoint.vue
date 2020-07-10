@@ -1,112 +1,69 @@
 <template>
-  <div class="container mt-2">
-    <h2>Create a new VPC endpoint connection</h2>
+  <div class="container mt-2 mb-2">
+    <h2>Create a new VPC endpoint</h2>
     <gl-alert variant="tip" class="mb-2 mt-2" :dismissible="false">
-      A VPC endpoint connection is a networking connection between two VPCs that
-      enables you to route traffic between them using private IPv4 addresses or
-      IPv6 addresses. Instances in either VPC can communicate with each other as
-      if they are within the same network. You can create a VPC endpoint
-      connection between your own VPCs, or with a VPC in another AWS account.
-      The VPCs can be in different regions (also known as an inter-region VPC
-      endpoint connection).
+      A VPC endpoint enables you to privately connect your VPC to supported AWS
+      services and VPC endpoint services powered by AWS PrivateLink without
+      requiring an internet gateway, NAT device, VPN connection, or AWS Direct
+      Connect connection. Instances in your VPC do not require public IP
+      addresses to communicate with resources in the service. Traffic between
+      your VPC and the other service does not leave the Amazon network.
     </gl-alert>
 
     <gl-form @submit="createEndpoint">
-      <gl-form-input-group
-        class="mt-3"
-        v-model="form.name"
-        placeholder="Create a tag with key 'Name' and the value you insert."
-      >
-        <template #prepend>
-          <b-input-group-text>Name</b-input-group-text>
-        </template>
-      </gl-form-input-group>
-
-      <h5 class="mt-2">Local VPC to peer with</h5>
       <gl-form-group
-        id="region-id"
-        label="Requester region:"
-        label-size="sm"
-        description="To see other regions, enable them in the settings"
-        label-for="region-input"
+        id="name-input-group"
+        label="Name:"
+        label-form="name-input"
+        description="Create a tag with key 'Name' and the value you insert."
       >
-        <gl-form-select
-          id="region-input"
-          v-model="form.requesterRegion"
-          :options="this.$store.getters['sts/regions']"
-          @change="getVPCsForRequesterRegion"
+        <gl-form-input
+          id="name-input"
+          v-model="form.name"
+          placeholder="Enter name"
         />
       </gl-form-group>
 
-      <gl-form-group
-        id="vpc-id"
-        label="Requester VPC:"
-        label-size="sm"
-        label-for="vpc-input"
-        class="mt-2"
-      >
-        <gl-form-select
-          id="vpc-input"
-          :disabled="form.requesterRegion === '' || isLoading"
-          v-model="form.requesterVpc"
-          :options="requesterVPCs"
-          value-field="VpcId"
-          text-field="VpcId"
-        />
-      </gl-form-group>
+      <RegionDropdown v-model="form.region" />
 
-      <h5 class="mt-2">Peer VPC options</h5>
-      <gl-form-input-group
-        id="accepter-account-id"
-        class="mt-2"
-        :predefined-options="accountIdPredefinedOptions"
-        v-model="form.accepterAccount"
+      <VpcDropdown
+        v-model="form.vpcId"
+        :region="form.region"
+        description="The VPC in which the endpoint will be used."
       />
 
       <gl-form-group
-        id="accepter-region"
-        label="Accepter Region:"
+        id="endpoint-id"
+        label="Endpoint type:"
         label-size="sm"
-        label-for="accepter-region-input"
-        class="mt-2"
+        label-for="endpoint-input"
       >
         <gl-form-select
-          id="accepter-region-input"
-          v-model="form.accepterRegion"
-          :options="allRegions"
-          value-field="value"
-          text-field="text"
-          @change="getVPCsForAccepterRegion"
+          id="endpoint-input"
+          v-model="form.endpointType"
+          :options="[
+            { value: '', text: 'Select an endpoint type' },
+            'Gateway',
+            'Interface',
+          ]"
+          required
         />
       </gl-form-group>
 
       <gl-form-group
-        id="accepter-vpc-id"
-        label="Accepter VPC:"
+        id="service-id"
+        label="Service name:"
         label-size="sm"
-        label-for="vpc-input"
-        class="mt-2"
-        v-if="accountId === form.accepterAccount"
+        label-for="service-input"
       >
         <gl-form-select
-          id="accepter-vpc-input"
-          :disabled="form.accepterRegion === '' || isLoading"
-          v-model="form.accepterVpc"
-          :options="accepterVPCs"
-          value-field="VpcId"
-          text-field="VpcId"
+          id="service-input"
+          v-model="form.serviceName"
+          :disabled="isServiceDisabled"
+          :options="servicesOptions"
+          required
         />
       </gl-form-group>
-
-      <gl-form-input-group
-        class="mt-3"
-        v-model="form.accepterVpc"
-        v-if="accountId !== form.accepterAccount"
-      >
-        <template #prepend>
-          <b-input-group-text>Accepter VPC ID</b-input-group-text>
-        </template>
-      </gl-form-input-group>
 
       <div class="row justify-content-between mt-3">
         <gl-button
@@ -122,7 +79,8 @@
           category="primary"
           variant="success"
           :disabled="createButtonDisabled"
-          >Create new endpoint connection
+          :loading="isCreating"
+          >Create new VPC endpoint
         </gl-button>
       </div>
     </gl-form>
@@ -137,18 +95,20 @@ import {
   GlFormSelect,
   GlButton,
   GlForm,
+  GlFormInput,
 } from "@gitlab/ui";
 import { BInputGroupText } from "bootstrap-vue";
-import EC2Client, {
-  CreateVpcEndpointConnectionRequest,
-  VpcList,
-} from "aws-sdk/clients/ec2";
-import { Component } from "vue-property-decorator";
+import EC2Client, { CreateVpcEndpointRequest } from "aws-sdk/clients/ec2";
+import { Component, Watch } from "vue-property-decorator";
 import { DaintreeComponent } from "@/mixins/DaintreeComponent";
-import { ALL_REGIONS } from "@/components/common/regions";
+import RegionDropdown from "@/components/common/formComponents/RegionDropdown.vue";
+import VpcDropdown from "@/components/common/formComponents/VpcDropdown.vue";
+import { generateClientToken } from "@/utils/clientToken";
 
 @Component({
   components: {
+    VpcDropdown,
+    RegionDropdown,
     GlFormSelect,
     GlFormGroup,
     GlAlert,
@@ -156,39 +116,46 @@ import { ALL_REGIONS } from "@/components/common/regions";
     BInputGroupText,
     GlButton,
     GlForm,
+    GlFormInput,
   },
 })
 export default class NewEndpoint extends DaintreeComponent {
-  readonly allRegions = ALL_REGIONS;
-  loadingCount = 0;
-
-  requesterVPCs: VpcList = [];
-  accepterVPCs: VpcList = [];
-
   form = {
-    requesterRegion: "",
-    requesterVpc: "",
-    accepterAccount: "",
-    accepterRegion: "",
-    accepterVpc: "",
+    region: "",
+    vpcId: "",
     name: "",
+    endpointType: "",
+    serviceName: "",
   };
 
-  get accountIdPredefinedOptions(): { name: string; value: string }[] {
-    return [
-      {
-        name: "This account",
-        value: this.accountId || "",
-      },
-      {
-        name: "Another account",
-        value: "",
-      },
-    ];
-  }
+  services: string[] = [];
+  isCreating = false;
 
   get createButtonDisabled(): boolean {
-    return Object.values(this.form).findIndex((value) => value === "") !== -1;
+    return (
+      Object.values(this.form).findIndex((value) => value === "") !== -1 ||
+      this.isCreating
+    );
+  }
+
+  get isServiceDisabled(): boolean {
+    return this.form.region === "" || this.form.endpointType === "";
+  }
+
+  get servicesOptions(): ({ value: string; text: string } | string)[] {
+    const options = [];
+    if (this.isServiceDisabled) {
+      options.push({
+        value: "",
+        text: "Select a region and an endpoint type before selecting a service",
+      });
+    } else {
+      options.push({ value: "", text: "Select a service" });
+    }
+
+    options.push(...this.services);
+
+    return options;
   }
 
   async EC2(region: string): Promise<EC2Client | undefined> {
@@ -201,90 +168,82 @@ export default class NewEndpoint extends DaintreeComponent {
     return new EC2Client({ region, credentials });
   }
 
-  refresh(): void {
-    this.getVPCsForRequesterRegion();
-  }
+  @Watch("form.region")
+  @Watch("form.endpointType")
+  async getServices(): Promise<void> {
+    this.services = [];
+    this.form.serviceName = "";
 
-  async getVPCsForRequesterRegion(): Promise<void> {
-    this.hideErrors("createEndpointConnection");
-    if (this.form.requesterRegion === "") {
-      this.requesterVPCs = [];
-    } else {
-      const EC2 = await this.EC2(this.form.requesterRegion);
-      if (!EC2) {
-        return;
-      }
-
-      this.incrementLoadingCount();
-      try {
-        const data = await EC2.describeVpcs().promise();
-        if (data.Vpcs) {
-          this.requesterVPCs = data.Vpcs;
-        }
-      } catch (err) {
-        this.showError(err.message, "createEndpointConnection");
-      } finally {
-        this.decreaseLoadingCount();
-      }
+    if (this.form.region === "" || this.form.endpointType === "") {
+      return;
     }
-  }
 
-  async getVPCsForAccepterRegion(): Promise<void> {
-    this.hideErrors("createEndpointConnection");
-    if (
-      this.form.accepterRegion === "" ||
-      this.accountId !== this.form.accepterAccount
-    ) {
-      this.accepterVPCs = [];
-    } else {
-      const EC2 = await this.EC2(this.form.accepterRegion);
-      if (!EC2) {
-        return;
-      }
-
-      this.incrementLoadingCount();
-      try {
-        const data = await EC2.describeVpcs().promise();
-        if (data.Vpcs) {
-          this.accepterVPCs = data.Vpcs;
-        }
-      } catch (err) {
-        this.showError(err.message, "createEndpointConnection");
-      } finally {
-        this.decreaseLoadingCount();
-      }
-    }
-  }
-
-  async createEndpoint(): Promise<void> {
-    const EC2 = await this.EC2(this.form.requesterRegion);
+    const EC2 = await this.EC2(this.form.region);
     if (!EC2) {
       return;
     }
 
-    const params: CreateVpcEndpointConnectionRequest = {
-      VpcId: this.form.requesterVpc,
-      PeerOwnerId: this.form.accepterAccount,
-      PeerRegion: this.form.accepterRegion,
-      PeerVpcId: this.form.accepterVpc,
+    const services = await EC2.describeVpcEndpointServices().promise();
+    if (services.ServiceDetails) {
+      for (const service of services.ServiceDetails) {
+        if (
+          service.ServiceName &&
+          service.ServiceType?.map((s) => s.ServiceType).includes(
+            this.form.endpointType
+          )
+        ) {
+          this.services.push(service.ServiceName);
+        }
+      }
+    }
+  }
+
+  refresh(): void {
+    this.getServices();
+  }
+
+  async createEndpoint(evt: Event): Promise<void> {
+    evt.preventDefault();
+
+    this.hideErrors("createEndpoint");
+
+    const EC2 = await this.EC2(this.form.region);
+    if (!EC2) {
+      return;
+    }
+
+    const params: CreateVpcEndpointRequest = {
+      VpcId: this.form.vpcId,
+      ServiceName: this.form.serviceName,
+      VpcEndpointType: this.form.endpointType,
+      ClientToken: generateClientToken(),
+      TagSpecifications: [
+        {
+          ResourceType: "vpc-endpoint",
+          Tags: [{ Key: "Name", Value: this.form.name }],
+        },
+      ],
     };
 
     try {
-      const data = await EC2.createVpcEndpointConnection(params).promise();
-      if (
-        this.form.name &&
-        data.VpcEndpointConnection?.VpcEndpointConnectionId
-      ) {
-        const params = {
-          Resources: [data.VpcEndpointConnection.VpcEndpointConnectionId],
-          Tags: [{ Key: "Name", Value: this.form.name }],
-        };
-        await EC2.createTags(params).promise();
-      }
-      this.hideErrors("createEndpointConnection");
-      this.$router.push("/network/endpointConnections");
+      this.isCreating = true;
+      const data = await EC2.createVpcEndpoint(params).promise();
+      const verb =
+        data.VpcEndpoint?.State?.toLowerCase() === "available"
+          ? "Created"
+          : "Creating";
+
+      this.showAlert({
+        variant: "success",
+        text: verb + " endpoint with ID " + data.VpcEndpoint?.VpcEndpointId,
+        key: "creatingEndpoint",
+        resourceId: data.VpcEndpoint?.VpcEndpointId,
+      });
+      this.$router.push("/network/endpoints");
     } catch (err) {
-      this.showError(err.message, "createEndpointConnection");
+      this.showError(err.message, "createEndpoint");
+    } finally {
+      this.isCreating = false;
     }
   }
 
