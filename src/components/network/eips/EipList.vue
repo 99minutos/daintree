@@ -55,6 +55,12 @@
           />
         </template>
 
+        <template v-slot:cell(networkinterfaceid)="data">
+          <gl-link :to="`/network/interfaces?NetworkInterfaceId=${data.value}`">
+            {{ data.value }}
+          </gl-link>
+        </template>
+
         <template v-slot:cell(region)="data">
           <RegionText :region="data.value" />
         </template>
@@ -104,6 +110,7 @@ import {
   GlModalDirective,
   GlSkeletonLoading,
   GlTable,
+  GlLink,
 } from "@gitlab/ui";
 import { Component } from "vue-property-decorator";
 import StateText from "@/components/common/StateText.vue";
@@ -120,6 +127,7 @@ import { NetworkComponent } from "@/components/network/networkComponent";
     Eip,
     GlSkeletonLoading,
     GlEmptyState,
+    GlLink,
   },
   directives: {
     "gl-modal-directive": GlModalDirective,
