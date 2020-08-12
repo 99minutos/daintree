@@ -70,19 +70,7 @@
 </template>
 
 <script lang="ts">
-import {
-  GlEmptyState,
-  GlSkeletonLoading,
-  GlTab,
-  GlTable,
-  GlTabs,
-  GlCard,
-  GlAlert,
-  GlButton,
-  GlModal,
-  GlModalDirective,
-  GlButtonGroup,
-} from "@gitlab/ui";
+import { GlTab, GlTabs, GlAlert } from "@gitlab/ui";
 import EC2Client from "aws-sdk/clients/ec2";
 import { Component, Prop } from "vue-property-decorator";
 import TagsTable from "@/components/common/TagsTable.vue";
